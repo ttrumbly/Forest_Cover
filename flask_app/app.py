@@ -1,9 +1,11 @@
 from flask import Flask, render_template
+import flask
 #from flask.ext.sqlalchemy import SQLAlchemy
 import numpy as np
 import pandas as pd
 import os
 from sklearn.ensemble import ExtraTreesClassifier
+import modify_data
 
 #Model for Forest Identifying#
 train = pd.read_csv('train 3.csv')
@@ -24,16 +26,18 @@ def viz_page():
     with open('visualization.html', 'r') as viz_file:
         return viz_file.read()
 
-@app.route('/score', methods=['POST'])
-def score():
+@app.route('/result', methods=['POST'])
+def result():
     '''
-    Make a prediction and return that as a response
+    When A POST request with json data is made to this uri,
+    Read the example from the json, predict probability and
+    send it with a response
     '''
     data = flask.request.json
-    x = np.matrix(data['example'])
-    score = FOREST.predict(x)
-    results = {'score':score[1,2,3,4,5,6,7]}
-    return flask.jsonify(results)
+    x = data['example']
+    df = modify_data.modify_list(x,X_train.columns)
+    result = FOREST.predict(df)
+    return result[0]
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

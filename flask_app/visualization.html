@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>D3.js Slider Examples</title>
+  <title>Predicting Forest Cover Type</title>
   <link rel="stylesheet" href="/static/d3.slider.css" />
   <style>
+
     body {
       font-family: Verdana,Arial,sans-serif;
     }
@@ -20,27 +21,43 @@
     .wrapper > div {
       margin: 35px 0;
     }
-    #slider8 {
-      height: 250px;
+    .d3slider {
+      z-index: 2;
+      height: 100%;
+      background: none;
     }
-    #slider9 {
-      height: 250px;
+
+    .d3slider-rect-range {
+      fill: #777;
+      stroke: none;
     }
+
+    #elevation_slider.d3slider-rect-value {
+      fill: #006EE3;
+      stroke: none;
+    }
+
+    #aspect_slider.d3slider-rect-value {
+      fill: black;
+      stroke: none;
+    }
+
+span {
+  color: steelblue;
+}
+
   </style>
 </head>
+
 <body>
   <div class="wrapper">
 
     <div id="chart_area" class="wrapper">
      <h2>Predicting the forest cover type</h2>
-     <p class="space"></p>
-     <div id="bar_chart">
+     <p class="space">Predicted Cover Type:</p>
+     <div id="result_call">
      </div>
     </div>
-
-    <h1>D3.js Slider Examples</h1>
-
-
 
     <h2>Elevation: <span id="Elevation">2596</span></h2>
     <div id="elevation_slider"></div>
@@ -86,20 +103,7 @@
 
       <!-- BAR CHART -->
 
-      var chart = d3.select("#bar_chart")
-                   .append("svg:svg")
-                   .attr("width", 800)
-                   .attr("height", 100);
-      var chance_scale = d3.scale.linear()
-                   .domain([0, 100])
-                   .range([0, 800]);
-     var bar = chart.append("g")
-                    .attr("class", "bar")
-          bar.append("svg:rect")
-             .attr("id", "chancebar")
-             .attr("class", "bar")
-<!--.attr("width", chance_scale(current_risk)) -->
-<!--.attr("height", 50); -->
+document.getElementById("result_call").innerHTML = cover_type;
 
 var cur_elevation = 2596;
 var cur_aspect = 51;
@@ -113,7 +117,7 @@ var cur_hill_3pm = 148;
 var cur_hor_fire = 6279;
 var cur_wild_area = 1;
 var cur_soil_type = 29;
-
+var cover_type = 5;
 
 <!-- FUNCTION TO GET CHANCE FROM YOUR PREDICTOR WITH AJAX AND CHANGE BAR  HEIGHT -->
 function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydrology, Vertical_Distance_To_Hydrology, Horizontal_Distance_To_Roadways, Hillshade_9am, Hillshade_Noon, Hillshade_3pm, Horizontal_Distance_To_Firepoints, Wilderness_Area, Soil_Type){
@@ -121,17 +125,14 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
   $.ajax({
     type: "POST",
     contentType: "application/json; charset=utf-8",
-    url: "/score",
+    url: "/result",
     dataType: "json",
     async: true,
     data: "{\"example\": ["+Elevation+","+Aspect+","+Slope+","+Horizontal_Distance_To_Hydrology+","+Vertical_Distance_To_Hydrology+","+Horizontal_Distance_To_Roadways+","+Hillshade_9am+","+Hillshade_Noon+","+Hillshade_3pm+","+Horizontal_Distance_To_Firepoints+","+Wilderness_Area+","+Soil_Type+"]}",
     success: function (data) {
-      var chance = 100 * data["score"];
-      d3.select("#chancebar")
-        .attr("width", chance_scale(chance));
-      d3.select("#percent_text")
-        .attr("x", chance_scale(chance-5))
-        .text(chance.toFixed(1) + "%");
+      var forest_type = data;
+      d3.select("#result_call")
+              .text(forest_type);
     },
     error: function (result) {
     }
@@ -150,6 +151,7 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
       .on("slide", function(evt, value) {
         d3.select('#Elevation').text(value);
         cur_elevation = value;
+        getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
       }));
 
     d3.select('#aspect_slider')
@@ -161,6 +163,7 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
       .on("slide", function(evt, value) {
         d3.select('#Aspect').text(value);
         cur_aspect = value;
+        getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
     }));
 
     d3.select('#slope_slider')
@@ -172,6 +175,7 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
       .on("slide", function(evt, value) {
         d3.select('#Slope').text(value);
         cur_slope = value;
+        getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
     }));
 
     d3.select('#horizontal_water_slider')
@@ -183,6 +187,7 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
       .on("slide", function(evt, value) {
         d3.select('#Horizontal_Distance_To_Hydrology').text(value);
         cur_elevation = value;
+        getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
       }));
 
     d3.select('#vertical_water_slider')
@@ -194,6 +199,7 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
          .on("slide", function(evt,value) {
            d3.select('#Vertical_Distance_To_Hydrology').text(value);
            cur_ver_water = value;
+           getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
          }));
 
     d3.select('#roadway_slider')
@@ -207,6 +213,7 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
         .on("slide", function(evt,value) {
           d3.select('#Horizontal_Distance_To_Roadways').text(value);
           cur_hor_road = value;
+          getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
         }));
 
     d3.select('#slider_9am')
@@ -220,6 +227,7 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
          .on("slide", function(evt,value) {
            d3.select('#Hillshade_9am').text(value);
            cur_hill_9am = value;
+           getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
         }));
 
     d3.select('#slider_noon')
@@ -233,6 +241,7 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
          .on("slide", function(evt,value) {
            d3.select('#Hillshade_Noon').text(value);
            cur_hill_noon = value;
+           getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
          }));
 
       d3.select('#slider_3pm')
@@ -246,6 +255,7 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
           .on("slide", function(evt,value) {
             d3.select('#Hillshade_3pm').text(value);
             cur_hill_3pm = value;
+            getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
           }));
 
       d3.select('#firepoint_slider')
@@ -259,6 +269,7 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
            .on("slide", function(evt,value) {
              d3.select('#Horizontal_Distance_To_Firepoints').text(value);
              cur_hor_fire = value;
+             getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
            }));
 
       d3.select('#wilderness_silder')
@@ -272,6 +283,7 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
            .on("slide", function(evt,value) {
              d3.select('#Wilderness_Area').text(value);
              cur_wild_area = value;
+             getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
            }));
 
       d3.select('#soil_slider')
@@ -285,11 +297,8 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
           .on("slide", function(evt,value) {
             d3.select('#Soil_Type').text(value);
             cur_soil_type = value;
+            getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
           }));
-
-
-
-
 
   </script>
 
