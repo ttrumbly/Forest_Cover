@@ -8,10 +8,9 @@ from sklearn.ensemble import ExtraTreesClassifier
 import modify_data
 
 #Model for Forest Identifying#
-train = pd.read_csv('train 3.csv')
-train['Id'] = train['Id'].apply(str)
+train = pd.read_csv('full_cols.csv')
 train['Cover_Type'] = train['Cover_Type'].apply(str)
-X_train = train.drop(['Cover_Type', 'Id'],1)
+X_train = train.drop(['Cover_Type', 'Unnamed: 0'],1)
 y_train = train['Cover_Type']
 FOREST = ExtraTreesClassifier(n_estimators=200, random_state=42).fit(X_train, y_train)
 # End of Forest Model
@@ -25,6 +24,10 @@ def viz_page():
     """
     with open('visualization.html', 'r') as viz_file:
         return viz_file.read()
+@app.route('/test.html')
+def test_page():
+    with open('test.html', 'r') as test_file:
+        return test_file.read()
 
 @app.route('/result', methods=['POST'])
 def result():
@@ -37,8 +40,14 @@ def result():
     x = data['example']
     df = modify_data.modify_list(x,X_train.columns)
     result = FOREST.predict(df)
+    #result = modify_data.modify_result(FOREST.predict(df))
     return result[0]
 
+#testing offline
+def result_off(data):
+    result = modify_data.modify_result(FOREST.predict(data))
+    return result
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=4000)
     app.run(debug=True)

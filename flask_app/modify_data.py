@@ -95,5 +95,23 @@ def modify_list(data, x_cols):
     df.loc[0] = data
     return df
 
+def modify_result(data):
+    answer = str(data[0])
+    if answer == '1':
+        answer = 'Spruce/Fir'
+    elif answer == '2':
+        answer = 'Lodgepole Pine'
+    elif answer == '3':
+        answer = 'Ponderosa Pine'
+    elif answer == '4':
+        answer = 'Cottonwood/Willow'
+    elif answer == '5':
+        answer = 'Aspen'
+    elif answer == '6':
+        answer = 'Douglas-fir'
+    else:
+        answer = 'Krummholz'
+    return answer
+
 if __name__ == '__main__':
-    print('No Thank You')
+    print('Please do not call me directly')

@@ -7,44 +7,60 @@
   <style>
 
     body {
+      background-color: #9ec1a3;
+      color: #0e5434;
       font-family: Verdana,Arial,sans-serif;
     }
     h2 {
       font-size: 1.2em;
+      color: #0e5434;
       margin: 60px 0 5px 0;
     }
+    p{
+      font-size:2em;
+      color: #000000;
+    }
     .wrapper {
-      width: 800px;
+      width: 400px;
       margin-left: auto;
       margin-right: auto;
     }
     .wrapper > div {
-      margin: 35px 0;
+      margin: 0px 0;
     }
-    .d3slider {
-      z-index: 2;
-      height: 100%;
-      background: none;
-    }
-
-    .d3slider-rect-range {
-      fill: #777;
-      stroke: none;
+    .d3-slider {
+        position: relative;
+        font-family: Verdana,Arial,sans-serif;
+        font-size: 1.1em;
+        border: 1px solid #000000;
+        background: #0f7202;
+        z-index: 2;
     }
 
-    #elevation_slider.d3slider-rect-value {
-      fill: #006EE3;
-      stroke: none;
+    .d3-slider-horizontal {
+        height: .3em;
     }
-
-    #aspect_slider.d3slider-rect-value {
-      fill: black;
-      stroke: none;
+    .d3-slider-range {
+      background:#fff;
+      left:0px;
+      right:0px;
+      height: 0.4em;
+      position: absolute;
+    }
+    .d3-slider-handle {
+        position: absolute;
+        width: 1em;
+        height: 1em;
+        border: 1px solid #999;
+        border-radius: 4px;
+        background: #999;
+        z-index: 3;
     }
 
 span {
-  color: steelblue;
+  color: #0e5434;
 }
+
 
   </style>
 </head>
@@ -53,11 +69,11 @@ span {
   <div class="wrapper">
 
     <div id="chart_area" class="wrapper">
-     <h2>Predicting the forest cover type</h2>
-     <p class="space">Predicted Cover Type:</p>
-     <div id="result_call">
-     </div>
-    </div>
+     <h2>Predicting forest cover type from cartographic features</h2>
+     <p class="space">Predicted Cover Type:
+     <span id="result_call"></span>
+     </p></div>
+
 
     <h2>Elevation: <span id="Elevation">2596</span></h2>
     <div id="elevation_slider"></div>
@@ -99,12 +115,10 @@ span {
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <script src="/static/d3.slider.js"></script>
+
   <script>
 
       <!-- BAR CHART -->
-
-document.getElementById("result_call").innerHTML = cover_type;
-
 var cur_elevation = 2596;
 var cur_aspect = 51;
 var cur_slope = 3;
@@ -117,9 +131,12 @@ var cur_hill_3pm = 148;
 var cur_hor_fire = 6279;
 var cur_wild_area = 1;
 var cur_soil_type = 29;
-var cover_type = 5;
+var cover_type = 'Aspen';
 
-<!-- FUNCTION TO GET CHANCE FROM YOUR PREDICTOR WITH AJAX AND CHANGE BAR  HEIGHT -->
+
+document.getElementById("result_call").innerHTML = cover_type;
+
+<!-- FUNCTION TO GET CHANCE FROM YOUR PREDICTOR WITH AJAX AND CHANGE BAR HEIGHT -->
 function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydrology, Vertical_Distance_To_Hydrology, Horizontal_Distance_To_Roadways, Hillshade_9am, Hillshade_Noon, Hillshade_3pm, Horizontal_Distance_To_Firepoints, Wilderness_Area, Soil_Type){
 
   $.ajax({
@@ -131,16 +148,24 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
     data: "{\"example\": ["+Elevation+","+Aspect+","+Slope+","+Horizontal_Distance_To_Hydrology+","+Vertical_Distance_To_Hydrology+","+Horizontal_Distance_To_Roadways+","+Hillshade_9am+","+Hillshade_Noon+","+Hillshade_3pm+","+Horizontal_Distance_To_Firepoints+","+Wilderness_Area+","+Soil_Type+"]}",
     success: function (data) {
       var forest_type = data;
+      if (forest_type == 1){forest_type='Spruce/Fir';}
+      else if (forest_type == 2){forest_type = 'Lodgepole Pine';}
+      else if (forest_type == 3){forest_type = 'Ponderosa Pine';}
+      else if (forest_type == 4){forest_type = 'Cottonwood/Willow';}
+      else if (forest_type == 5){forest_type = 'Aspen';}
+      else if(forest_type == 6){forest_type = 'Douglas-fir';}
+      else{forest_type = 'Krummholz';}
       d3.select("#result_call")
               .text(forest_type);
-    },
-    error: function (result) {
-    }
-  })
-}
+            },
+            error: function (result) {
+            }
+    })
+  }
 
 
   <!-- SLIDERS -->
+
 
     d3.select('#elevation_slider')
     .call(
@@ -275,7 +300,7 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
       d3.select('#wilderness_silder')
        .call(
          d3.slider()
-           .value(cur_hor_fire)
+           .value(cur_wild_area)
            .min(1)
            .max(4)
            .step(1)

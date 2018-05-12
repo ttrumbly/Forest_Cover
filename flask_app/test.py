@@ -1,9 +1,10 @@
 import modify_data
+import app
 import numpy as np
 import pandas as pd
 
 def func():
-    data = [2596,51,3,258,0,510,221,232,148,6279,1,29]
+    data = [2804,139,9,268,65,3180,234,238,135,6121,1,12]
     cols = ['Elevation', 'Aspect', 'Slope', 'Horizontal_Distance_To_Hydrology',
        'Vertical_Distance_To_Hydrology', 'Horizontal_Distance_To_Roadways',
        'Hillshade_9am', 'Hillshade_Noon', 'Hillshade_3pm',
@@ -21,7 +22,8 @@ def func():
        'Soil_Type39', 'Soil_Type40']
 
     newdf = modify_data.modify_list(data, cols)
-    print (newdf)
+    outcome = app.result_off(newdf)
+    print (outcome)
 
 if __name__ == '__main__':
     func()
