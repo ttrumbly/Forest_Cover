@@ -148,17 +148,19 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
     data: "{\"example\": ["+Elevation+","+Aspect+","+Slope+","+Horizontal_Distance_To_Hydrology+","+Vertical_Distance_To_Hydrology+","+Horizontal_Distance_To_Roadways+","+Hillshade_9am+","+Hillshade_Noon+","+Hillshade_3pm+","+Horizontal_Distance_To_Firepoints+","+Wilderness_Area+","+Soil_Type+"]}",
     success: function (data) {
       var forest_type = data;
-      if (forest_type == 1){forest_type='Spruce/Fir';}
-      else if (forest_type == 2){forest_type = 'Lodgepole Pine';}
-      else if (forest_type == 3){forest_type = 'Ponderosa Pine';}
-      else if (forest_type == 4){forest_type = 'Cottonwood/Willow';}
-      else if (forest_type == 5){forest_type = 'Aspen';}
-      else if(forest_type == 6){forest_type = 'Douglas-fir';}
+      console.log(forest_type)
+      if (forest_type == 0){forest_type='Spruce/Fir';}
+      else if (forest_type == 1){forest_type = 'Lodgepole Pine';}
+      else if (forest_type == 2){forest_type = 'Ponderosa Pine';}
+      else if (forest_type == 3){forest_type = 'Cottonwood/Willow';}
+      else if (forest_type == 4){forest_type = 'Aspen';}
+      else if(forest_type == 5){forest_type = 'Douglas-fir';}
       else{forest_type = 'Krummholz';}
       d3.select("#result_call")
               .text(forest_type);
             },
             error: function (result) {
+              console.log('i got here')
             }
     })
   }

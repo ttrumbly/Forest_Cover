@@ -1,18 +1,15 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 import flask
 #from flask.ext.sqlalchemy import SQLAlchemy
 import numpy as np
 import pandas as pd
 import os
-from sklearn.ensemble import ExtraTreesClassifier
+from catboost import Pool, CatBoostClassifier
 import modify_data
+import pickle
 
 #Model for Forest Identifying#
-train = pd.read_csv('full_cols.csv')
-train['Cover_Type'] = train['Cover_Type'].apply(str)
-X_train = train.drop(['Cover_Type', 'Unnamed: 0'],1)
-y_train = train['Cover_Type']
-FOREST = ExtraTreesClassifier(n_estimators=200, random_state=42).fit(X_train, y_train)
+cat_tree_model = pickle.load(open('cat_model.model', 'rb'))
 # End of Forest Model
 
 app = Flask(__name__)
@@ -37,11 +34,19 @@ def result():
     send it with a response
     '''
     data = flask.request.json
-    x = data['example']
-    df = modify_data.modify_list(x,X_train.columns)
-    result = FOREST.predict(df)
-    #result = modify_data.modify_result(FOREST.predict(df))
-    return result[0]
+    print (data)
+    cols_to_use = ['Elevation', 'Aspect', 'Slope', 'Horizontal_Distance_To_Hydrology', 'Vertical_Distance_To_Hydrology', 'Horizontal_Distance_To_Roadways', 'Hillshade_9am', 'Hillshade_Noon', 'Hillshade_3pm', 'Horizontal_Distance_To_Fire_Points', 'Wilderness_Area', 'Soil_Type']
+    x = [data['example']]
+    data_df = pd.DataFrame(x, columns=cols_to_use)
+    # these series of commands works great to get a single digit result. trying to get predict_proba now
+    result = cat_tree_model.predict(data_df)
+    result = result.flatten()
+    result = [str(int(i)) for i in result]
+    #print(result)
+    keys, values = cat_tree_model.classes_, (cat_tree_model.predict_proba(data_df)*100).flatten()
+    dictionary = modify_data.modify_result(result, keys, values)
+    print(dictionary)
+    return jsonify(dictionary)
 
 #testing offline
 def result_off(data):
