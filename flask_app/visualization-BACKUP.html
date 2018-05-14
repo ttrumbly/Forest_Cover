@@ -36,9 +36,7 @@
         background: #0f7202;
         z-index: 2;
     }
-    .axis {
-    font: 14px sans-serif;
-  }
+
     .d3-slider-horizontal {
         height: .3em;
     }
@@ -71,13 +69,16 @@ span {
 </head>
 
 <body>
-  <h1>Predicting forest cover type from cartographic features</h1>
-  <svg id="barchart" width="1000" height="400"></svg>
-  <p class="space">Predicted Cover Type:<span id="result_call"></span></p>
   <div class="wrapper">
-  <div id="chart_area" class="wrapper">
 
-</div>
+    <div id="chart_area" class="wrapper">
+     <h2>Predicting forest cover type from cartographic features</h2>
+     <p class="space">Predicted Cover Type:
+     <span id="result_call"></span>
+     </p></div>
+
+    <h2> Bar Chart Goes Here</h2>
+    <div id="bar_chart"></div>
 
     <h2>Elevation: <span id="Elevation">2596</span></h2>
     <div id="elevation_slider"></div>
@@ -124,52 +125,6 @@ span {
   <script>
 
       <!-- BAR CHART -->
-
-
-<!--
-
-function InitChart(barData) {
-d3.selectAll("svg > *").remove()
-var vis = d3.select('#barchart'),
-   WIDTH = 1000,
-   HEIGHT = 400,
-   MARGINS = {top: 20,right: 20,bottom: 20,left: 50},
-   xRange = d3.scale.ordinal().rangeRoundBands([MARGINS.left, WIDTH - MARGINS.right], 0.1).domain(barData.map(function (d) {return d.key;})),
-   yRange = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([0,d3.max(barData, function (d) {return d.prob;})]),
-
-  xAxis = d3.svg.axis()
-    .scale(xRange)
-    .tickSize(2)
-    .tickSubdivide(true),
-
-  yAxis = d3.svg.axis()
-    .scale(yRange)
-    .tickSize(2)
-    .orient("left")
-    .tickSubdivide(true);
-
-  vis.append('svg:g')
-      .attr('class', 'x axis')
-      .attr('transform', 'translate(0,' + (HEIGHT - MARGINS.bottom) + ')')
-      .call(xAxis);
-
-  vis.append('svg:g')
-      .attr('class', 'y axis')
-      .attr('transform', 'translate(' + (MARGINS.left) + ',0)')
-      .call(yAxis);
-
-  vis.selectAll('rect')
-      .data(barData).enter()
-      .append('rect')
-      .attr('x', function (d) {return xRange(d.key);})
-      .attr('y', function (d) {return yRange(d.prob);})
-      .attr('width', xRange.rangeBand())
-      .attr('height', function (d) {return ((HEIGHT - MARGINS.bottom) - yRange(d.prob));})
-      .attr('fill', 'grey')
-      .on('mouseover',function(d){d3.select(this).attr('fill','blue');})
-      .on('mouseout',function(d){d3.select(this).attr('fill','grey');});
-}
-
 var cur_elevation = 2596;
 var cur_aspect = 51;
 var cur_slope = 3;
@@ -183,16 +138,76 @@ var cur_hor_fire = 6279;
 var cur_wild_area = 1;
 var cur_soil_type = 29;
 var cover_types = ['Spruce/Fir', 'Lodgepole Pine', 'Ponderosa Pine', 'Cottonwood/Willow', 'Aspen', 'Douglas-fir', 'Krummholz'];
-/*
-var barData = [
-    {key: "Spruce/Fir", prob: 0.31132698449622104},
-    {key: "Lodgepole Pine", prob: 3.4820180537494907},
-    {key: "Ponderosa Pine", prob: 0.3558732596560769},
-    {key: "Cottonwood/Willow", prob: 0.3810041679467747},
-    {key: "Aspen", prob: 95.11872191286199},
-    {key: "Douglas-fir", prob: 0.2597109817338908},
-    {key: "Krummholz", prob: 0.09134463955557942}]
+
+var make_bar = function(data2){
+    var margin = {top: 40, right: 20, bottom: 30, left: 40},
+        width = 960 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+    var x = d3.scale.ordinal().domain(cover_types).rangeRoundBands([0, width], .05);
+    var y = d3.scale.linear().range([height, 0]);
+    var canvas = d3.select('#bar_chart')
+      .append('svg').attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom");
+    canvas.append('g')
+      .attr('class', 'x axis')
+      .attr('transform', 'translate(0,' + height + ')')
+      .call(xAxis);
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left")
+        .ticks(10);
+    var yAxisHandleUpdate = canvas.append('g')
+      .attr('class','y axis')
+      .call(yAxis);
+
+    yAxisHandleUpdate.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Probability");
+
+    var update_bars = function(data2) {
+      y.domain( d3.extent(data2)) ;
+      yAxisHandleUpdate.call(yAxis);
+
+      var bars =  canvas.selectAll('.bar').data2(data2);
+
+      bars.enter()
+        .append('rect')
+          .attr('class','bar')
+          .attr('x', function(d,i) { return x( cover_types[i]);})
+          .attr('width', x.rangeBand())
+          .attr('y', function(d,i) {return y(prob[i]); })
+          .attr('height', function(d,i) {return height- y(prob[i]); });
+
+      bars.transition().duration(250)
+      .attr("y", function(d,i) { return yScale(d); })
+      .attr("height", function(d,i) { return height - yScale(d); });
+
+      bars.exit().remove();
+    }}
+
+
+
+
+
+/* Maybe to be added in
+var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function(d) {
+    return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
+  })
 */
+
+
 document.getElementById("result_call").innerHTML = cover_types[4];
 
 <!-- FUNCTION TO GET CHANCE FROM YOUR PREDICTOR WITH AJAX AND CHANGE BAR HEIGHT -->
@@ -214,7 +229,7 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
       var val5 = (forest_type[cover_types[4]]);
       var val6 = (forest_type[cover_types[5]]);
       var val7 = (forest_type[cover_types[6]]);
-      /*console.log(forest_type['result']) useful for testing and seeing what data exists*/
+      /*console.log(forest_type['result'])*/
       if (forest_type['result']=='0'){forest_type=cover_types[0];}
       else if (forest_type['result']=='1'){forest_type = cover_types[1];}
       else if (forest_type['result']=='2'){forest_type = cover_types[2];}
@@ -222,7 +237,7 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
       else if (forest_type['result']=='4'){forest_type = cover_types[4];}
       else if(forest_type['result']=='5'){forest_type = cover_types[5];}
       else{forest_type = cover_types[6];}
-      var barData = [
+      var data2 = [
         {key:cover_types[0], prob: val1},
         {key:cover_types[1], prob: val2},
         {key:cover_types[2], prob: val3},
@@ -231,8 +246,36 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
         {key:cover_types[5], prob: val6},
         {key:cover_types[6], prob: val7}
       ];
-      /*console.log(barData);useful for testing and seeing what data exists*/
-      InitChart(barData);
+      console.log(data2);
+      make_bar(data2);
+      /*x.domain(data2.map(function(d) { return d.key;}));
+      y.domain([0, d3.max(data2, function(d) { return d.prob;})])
+      svg.append('g')
+          .attr('class','x axis')
+          .attr('transform', 'translate(0,' + height + ')')
+          .call(xAxis);
+      svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis)
+         .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 6)
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text("Probability");
+      svg.selectAll(".bar")
+        .data(data2)
+      .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d) { return x(d.key); })
+        .attr("width", x.rangeBand())
+        .attr("y", function(d) { return y(d.prob); })
+        .attr("height", function(d) { return height - y(d.prob); })
+      function type(d) {
+        d.prob = +d.prob;
+        return d;
+      }*/
+
 
       d3.select("#result_call")
               .text(forest_type);
@@ -240,8 +283,8 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
             error: function (result) {
               console.log('i got here')
             }
-    })}
-
+    })
+  }
 
 
   <!-- SLIDERS -->
@@ -291,7 +334,7 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
       .axis(true)
       .on("slide", function(evt, value) {
         d3.select('#Horizontal_Distance_To_Hydrology').text(value);
-        cur_hor_water = value;
+        cur_elevation = value;
         getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
       }));
 
@@ -404,106 +447,8 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
             cur_soil_type = value;
             getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
           }));
+
   </script>
 
 </body>
 </html>
-<!-- Outdated
-      make_bar(data2);
-        x.domain(data2.map(function(d) { return d.key;}));
-        y.domain([0, d3.max(data2, function(d) { return d.prob;})])
-      svg.append('g')
-          .attr('class','x axis')
-          .attr('transform', 'translate(0,' + height + ')')
-          .call(xAxis);
-      svg.append("g")
-          .attr("class", "y axis")
-          .call(yAxis)
-         .append("text")
-          .attr("transform", "rotate(-90)")
-          .attr("y", 6)
-          .attr("dy", ".71em")
-          .style("text-anchor", "end")
-          .text("Probability");
-      svg.selectAll(".bar")
-        .data(data2)
-      .enter().append("rect")
-        .attr("class", "bar")
-        .attr("x", function(d) { return x(d.key); })
-        .attr("width", x.rangeBand())
-        .attr("y", function(d) { return y(d.prob); })
-        .attr("height", function(d) { return height - y(d.prob); })
-      function type(d) {
-        d.prob = +d.prob;
-        return d;
-      }
-
-
-      /*var make_bar = function(data2){
-          var margin = {top: 40, right: 20, bottom: 30, left: 40},
-              width = 960 - margin.left - margin.right,
-              height = 500 - margin.top - margin.bottom;
-          var x = d3.scale.ordinal().domain(cover_types).rangeRoundBands([0, width], .05);
-          var y = d3.scale.linear().range([height, 0]);
-          var canvas = d3.select('#bar_chart')
-            .append('svg').attr("width", width + margin.left + margin.right)
-              .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-          var xAxis = d3.svg.axis()
-              .scale(x)
-              .orient("bottom");
-          canvas.append('g')
-            .attr('class', 'x axis')
-            .attr('transform', 'translate(0,' + height + ')')
-            .call(xAxis);
-
-          var yAxis = d3.svg.axis()
-              .scale(y)
-              .orient("left")
-              .ticks(10);
-          var yAxisHandleUpdate = canvas.append('g')
-            .attr('class','y axis')
-            .call(yAxis);
-
-          yAxisHandleUpdate.append("text")
-              .attr("transform", "rotate(-90)")
-              .attr("y", 6)
-              .attr("dy", ".71em")
-              .style("text-anchor", "end")
-              .text("Probability");
-
-          var update_bars = function(data2) {
-            y.domain( d3.extent(data2)) ;
-            yAxisHandleUpdate.call(yAxis);
-
-            var bars =  canvas.selectAll('.bar').data2(data2);
-
-            bars.enter()
-              .append('rect')
-                .attr('class','bar')
-                .attr('x', function(d,i) { return x( cover_types[i]);})
-                .attr('width', x.rangeBand())
-                .attr('y', function(d,i) {return y(prob[i]); })
-                .attr('height', function(d,i) {return height- y(prob[i]); });
-
-            bars.transition().duration(250)
-            .attr("y", function(d,i) { return yScale(d); })
-            .attr("height", function(d,i) { return height - yScale(d); });
-
-            bars.exit().remove();
-          }}
-
-
-
-
-
-      /* Maybe to be added in
-      var tip = d3.tip()
-        .attr('class', 'd3-tip')
-        .offset([-10, 0])
-        .html(function(d) {
-          return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
-        })
-      */
--->
