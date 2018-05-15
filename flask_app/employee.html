@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <meta charset="utf-8" />
+  <title>Employee Landing Page</title>
+  <style>
+
+    body {
+      background-color: #9ec1a3;
+      color: #0e5434;
+      font-family: Verdana,Arial,sans-serif;
+    }
+    h2 {
+      font-size: 1.2em;
+      color: #0e5434;
+      margin: 60px 0 5px 0;
+    }
+    p{
+      font-size:2em;
+      color: #000000;
+    }
+</style>
+
+<body>
+<h1>Please input information about the parcel you surveyed</h1>
+<form>
+  Parcel Elevation: <input type='number' name='elevation' id="ele_input"><br>
+  Parcel Aspect: <input type='number' name='aspect' id="asp_input"><br>
+  Parcel Slope: <input type='number' name='slope' id="slo_input"><br>
+  Horizontal Distance to Hydrology: <input type='number' name='horizontal_distance_to_hydrology' id="hdh_input"><br>
+  Vertical Distance to Hydrology: <input type='number' name='vertical_distance_to_hydrology' id="vdh_input"><br>
+  Horizontal Distance to Roadway: <input type='number' name='horizontal_distance_to_roadways' id="hdr_input"><br>
+  9am Hillshade: <input type='number' name='hillshade_9am' id="h9a_input"><br>
+  Noon Hillshade: <input type='number' name='hillshade_noon' id="h12_input"><br>
+  3pm Hillshade: <input type='number' name='hillshade_3pm' id="h3p_input"><br>
+  Hortizontal Distance to Firepoints: <input type='number' name='horizontal_distance_to_fire_points' id="hdf_input"><br>
+  Cover Type: <input type='number' name='cover_type' id="cov_input"><br>
+  Wilderness Area: <input type='number' name='wilderness_area' id="wil_input"><br>
+  Soil Type: <input type='number' name='soil_type' id="soi_input"><br>
+<input type="button" onclick="submitdata()" value="submit" />
+
+
+</form>
+
+  <script>
+
+  function submitdata() {
+      /*var id = document.getElementById("id_input").value;*/
+      var ele = document.getElementById('ele_input').value;
+      var asp = document.getElementById('asp_input').value;
+      var slo = document.getElementById('slo_input').value;
+      var hdh = document.getElementById('hdh_input').value;
+      var vdh = document.getElementById('vdh_input').value;
+      var hdr = document.getElementById('hdr_input').value;
+      var h9a = document.getElementById('h9a_input').value;
+      var h12 = document.getElementById('h12_input').value;
+      var h3p = document.getElementById('h3p_input').value;
+      var hdf = document.getElementById('hdf_input').value;
+      var cov = document.getElementById('cov_input').value;
+      var wil = document.getElementById('wil_input').value;
+      var soi = document.getElementById('soi_input').value;
+      listtosend=[ele,asp,slo,hdh,vdh,hdr,h9a,h12,h3p,hdf,cov,wil,soi]
+      console.log(listtosend)
+      $.ajax({
+        type: 'POST',
+        contentType: "application/json; charset=utf-8",
+        url: '/add',
+        dataType: 'json',
+        data: "{\"example\": ["+ele+","+asp+","+slo+","+hdh+","+vdh+","+hdr+","+h9a+","+h12+","+h3p+","+hdf+","+cov+","+wil+","+soi+"]}",
+        async: true,
+        success: function(result){
+            console.log('success');
+            location.href='success.html';
+          },
+            error: function (result) {
+              console.log('i got here');
+        }})
+      }
+
+
+/*
+  var id = document.getElementsByName('id')[0].value;
+  var ele = document.getElementsByName('elevation')[0].value;
+  var asp = document.getElementsByName('aspect')[0].value;
+  var slo = document.getElementsByName('slope')[0].value;
+  var hdh = document.getElementsByName('horizontal_distance_to_hydrology')[0].value;
+  var vdh = document.getElementsByName('vertical_distance_to_hydrology')[0].value;
+  var hdr = document.getElementsByName('horizontal_distance_to_roadways')[0].value;
+  var h9a = document.getElementsByName('hillshade_9am')[0].value;
+  var h12 = document.getElementsByName('hillshade_noon')[0].value;
+  var h3p = document.getElementsByName('hillshade_3pm')[0].value;
+  var hdf = document.getElementsByName('horizontal_distance_to_fire_points')[0].value;
+  var cov = document.getElementsByName('cover_type')[0].value;
+  var wil = document.getElementsByName('wilderness_area')[0].value;
+  var soi = document.getElementsByName('soil_type')[0].value;
+
+  console.log(id);*/
+  // create the object that will hold the input values
+
+
+  </script>
+
+
+
+</body>
+</html>

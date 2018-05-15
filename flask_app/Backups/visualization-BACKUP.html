@@ -78,32 +78,6 @@
     .bar:hover { fill:brown;}
     .axis--x path { display: none;}
 
-    #tooltip {
-    position: absolute;
-    width: 200px;
-    height: auto;
-    padding: 10px;
-    background-color: rgba(63,127,78,0.6);
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-    -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-    pointer-events: none;
-    }
-
-    #tooltip.hidden {
-    display: none;
-    }
-
-    #tooltip p {
-    margin: 0;
-    font-family: sans-serif;
-    font-size: 16px;
-    line-height: 20px;
-    }
-
 span {
   color: #0e5434;
 }
@@ -115,10 +89,7 @@ span {
 <body>
   <!--<img src = '/static/aspen_bark.jpg' width=70, height=200/>-->
   <h1>Predicting forest cover type from cartographic features</h1>
-  <svg id="barchart" width="1000" height="400">
-    <!-- This tooltip shows up automatically when I load the webpage, I am sure there is a way to resolve this concern, and I want to focus on other aspects of the project currently to be resolved later -->
-  <div id="tooltip"><img src="/static/aspen.jpg" id="pic" style='width:12em;'/></div>
-  </svg>
+  <svg id="barchart" width="1000" height="400"></svg>
   <p class="space">Predicted Cover Type:<span id="result_call"></span></p>
 <!--  <div class="wrapper">-->
   <div class='flex-container'>
@@ -184,13 +155,6 @@ span {
 
 <!--
 
-var tip = d3.tip()
-  .attr('class', 'd3-tip')
-  .offset([-10, 0])
-  .html(function(d) {
-    return "<strong>Type:</strong> <span style='color:red'>" + d.key + "</span>";
-  })
-
 function InitChart(barData) {
 d3.selectAll("svg > *").remove()
 var vis = d3.select('#barchart'),
@@ -239,46 +203,10 @@ var vis = d3.select('#barchart'),
       .attr('y', function (d) {return yRange(d.prob);})
       .attr('width', xRange.rangeBand())
       .attr('height', function (d) {return ((HEIGHT - MARGINS.bottom) - yRange(d.prob));})
-      .attr('fill', 'darkgreen')
-      .on("mouseover", function(d) {
-            d3.select(this)
-            .transition()
-            .duration(250)
-            .attr("fill", '#77adab');
-
-            //Get this bar's x/y values, then augment for the tooltip
-            var xPosition = parseFloat(d3.select(this).attr("x"));
-            var yPosition = parseFloat(d3.select(this).attr("y")) / 2 + HEIGHT / 2;
-
-            //Update the tooltip position and value
-            d3.select("#tooltip")
-            .style("left", xPosition + "px")
-            .style("top", yPosition + "px")
-            .select("#value")
-            .text(d.key);
-
-            d3.select("#pic")
-            .attr("src",d.image);
-
-            //Show the tooltip
-            d3.select("#tooltip").classed("hidden", false);
-            })
-      .on("mouseout", function() {
-            d3.select(this)
-            .transition()
-            .delay(100)
-            .duration(250)
-            .attr("fill", 'darkgreen')
-
-            //Hide the tooltip
-            d3.select("#tooltip").classed("hidden", true);
-
-            })
-
-
+      .attr('fill', "green")
+      .on('mouseover',function(d){d3.select(this).attr('fill','/static/aspen_bark.jpg');})
+      .on('mouseout',function(d){d3.select(this).attr('fill','grey');});
 }
-
-
 
 var cur_elevation = 2596;
 var cur_aspect = 51;
@@ -333,13 +261,13 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
       else if(forest_type['result']=='5'){forest_type = cover_types[5];}
       else{forest_type = cover_types[6];}
       var barData = [
-        {key:cover_types[0], prob: val1, image:'/static/spruce.jpg'},
-        {key:cover_types[1], prob: val2, image:'/static/lodge.jpg'},
-        {key:cover_types[2], prob: val3, image:'/static/ponder.jpg'},
-        {key:cover_types[3], prob: val4, image:'/static/willow.jpg'},
-        {key:cover_types[4], prob: val5, image:'/static/aspen.jpg'},
-        {key:cover_types[5], prob: val6, image:'/static/doug.jpg'},
-        {key:cover_types[6], prob: val7, image:'/static/krum.jpeg'}
+        {key:cover_types[0], prob: val1},
+        {key:cover_types[1], prob: val2},
+        {key:cover_types[2], prob: val3},
+        {key:cover_types[3], prob: val4},
+        {key:cover_types[4], prob: val5},
+        {key:cover_types[5], prob: val6},
+        {key:cover_types[6], prob: val7}
       ];
       /*console.log(barData);useful for testing and seeing what data exists*/
       InitChart(barData);
@@ -518,3 +446,102 @@ function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydro
 
 </body>
 </html>
+<!-- Outdated
+      make_bar(data2);
+        x.domain(data2.map(function(d) { return d.key;}));
+        y.domain([0, d3.max(data2, function(d) { return d.prob;})])
+      svg.append('g')
+          .attr('class','x axis')
+          .attr('transform', 'translate(0,' + height + ')')
+          .call(xAxis);
+      svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis)
+         .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 6)
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text("Probability");
+      svg.selectAll(".bar")
+        .data(data2)
+      .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d) { return x(d.key); })
+        .attr("width", x.rangeBand())
+        .attr("y", function(d) { return y(d.prob); })
+        .attr("height", function(d) { return height - y(d.prob); })
+      function type(d) {
+        d.prob = +d.prob;
+        return d;
+      }
+
+
+      /*var make_bar = function(data2){
+          var margin = {top: 40, right: 20, bottom: 30, left: 40},
+              width = 960 - margin.left - margin.right,
+              height = 500 - margin.top - margin.bottom;
+          var x = d3.scale.ordinal().domain(cover_types).rangeRoundBands([0, width], .05);
+          var y = d3.scale.linear().range([height, 0]);
+          var canvas = d3.select('#bar_chart')
+            .append('svg').attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+          var xAxis = d3.svg.axis()
+              .scale(x)
+              .orient("bottom");
+          canvas.append('g')
+            .attr('class', 'x axis')
+            .attr('transform', 'translate(0,' + height + ')')
+            .call(xAxis);
+
+          var yAxis = d3.svg.axis()
+              .scale(y)
+              .orient("left")
+              .ticks(10);
+          var yAxisHandleUpdate = canvas.append('g')
+            .attr('class','y axis')
+            .call(yAxis);
+
+          yAxisHandleUpdate.append("text")
+              .attr("transform", "rotate(-90)")
+              .attr("y", 6)
+              .attr("dy", ".71em")
+              .style("text-anchor", "end")
+              .text("Probability");
+
+          var update_bars = function(data2) {
+            y.domain( d3.extent(data2)) ;
+            yAxisHandleUpdate.call(yAxis);
+
+            var bars =  canvas.selectAll('.bar').data2(data2);
+
+            bars.enter()
+              .append('rect')
+                .attr('class','bar')
+                .attr('x', function(d,i) { return x( cover_types[i]);})
+                .attr('width', x.rangeBand())
+                .attr('y', function(d,i) {return y(prob[i]); })
+                .attr('height', function(d,i) {return height- y(prob[i]); });
+
+            bars.transition().duration(250)
+            .attr("y", function(d,i) { return yScale(d); })
+            .attr("height", function(d,i) { return height - yScale(d); });
+
+            bars.exit().remove();
+          }}
+
+
+
+
+
+      /* Maybe to be added in
+      var tip = d3.tip()
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(function(d) {
+          return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
+        })
+      */
+-->
