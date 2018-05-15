@@ -27,6 +27,15 @@ def home_page():
     with open('index.html', 'r') as home_page:
         return home_page.read()
 
+#make it so the page can route to index.html as well as /
+@app.route('/index.html')
+def index_page():
+    """
+    Home page for the app
+    """
+    with open('index.html', 'r') as index_page:
+        return index_page.read()
+
 #set the visulization page
 @app.route('/visualization.html')
 def viz_page():
@@ -41,9 +50,9 @@ def test_page():
     with open('test.html', 'r') as test_file:
         return test_file.read()
 
-@app.route('/information.html')
+@app.route('/info.html')
 def info_page():
-    with open('information.html', 'r') as info_file:
+    with open('info.html', 'r') as info_file:
         return info_file.read()
 
 #update the prediction by running it through my model
