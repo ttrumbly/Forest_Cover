@@ -12,6 +12,7 @@ p{
   font-size:2em;
   color: #0e5434;
 }
+h3{z-index: -1}
 
 ul {
 list-style-type: none;
