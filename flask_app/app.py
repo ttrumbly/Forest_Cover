@@ -84,13 +84,13 @@ def employee_page():
     with open('employee.html', 'r') as employee_page:
         return employee_page.read()
 
-#redirect success website
+#redirect to success website after successful sql load
 @app.route('/success.html')
 def success():
     with open('success.html', 'r') as success:
         return success.read()
 
-#load new data into the sql database
+#load new data into the sql database, I use a query to find the last item and set my id to 1 more than that so as to not overwrite any existing data.
 @app.route('/add', methods=['POST'])
 def add():
     '''
@@ -107,7 +107,7 @@ def add():
     data_df.to_sql('forest_cover',cnx, if_exists='append', index=False)
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
-#testing offline
+#testing offline was able to call this function from other python files without being online for some basic testing.
 def result_off(data):
     result = modify_data.modify_result(FOREST.predict(data))
     return result
