@@ -1,5 +1,5 @@
 body {
-  background-color: rgba(120,127,120,0.7);
+  background-color: rgba(152,184,184,1.0);
   color: #0e5434;
   font-family: Verdana,Arial,sans-serif;
 }
@@ -12,15 +12,7 @@ p{
   font-size:2em;
   color: #0e5434;
 }
-/*    .wrapper {
-  width: 400px;
-  margin-left: auto;
-  margin-right: auto;
-}
-.wrapper > div {
-  margin: 0px 0;
-}
-*/
+
 ul {
 list-style-type: none;
 margin: 0;
