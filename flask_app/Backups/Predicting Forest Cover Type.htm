@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<!-- saved from url=(0040)http://localhost:4000/visualization.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title>Predicting Forest Cover Type</title>
+  <link rel="stylesheet" href="./Predicting Forest Cover Type_files/d3.slider.css">
+  <link rel="stylesheet" href="./Predicting Forest Cover Type_files/mypage.css">
+  <style>
+
+
+  </style>
+</head>
+<body><ul>
+  <li><a href="http://localhost:4000/">Home</a></li>
+  <li><a href="http://localhost:4000/visualization.html">Visualization</a></li>
+  <li><a href="http://localhost:4000/employee.html">Employee Log</a></li>
+  <li><a href="http://localhost:4000/about.html">Information</a></li>
+</ul>
+
+  <!--<img src = '/static/aspen_bark.jpg' width=70, height=200/>-->
+  <h1>Predicting forest cover type from cartographic features</h1>
+  <svg id="barchart" width="1000" height="400">
+    <!-- This tooltip shows up automatically when I load the webpage, I am sure there is a way to resolve this concern, and I want to focus on other aspects of the project currently to be resolved later -->
+  <g class="x axis" transform="translate(0,380)"><g class="tick" transform="translate(125.5,0)" style="opacity: 1;"><line y2="2" x2="0"></line><text dy=".71em" y="5" x="0" style="text-anchor: middle;">Spruce/Fir</text></g><g class="tick" transform="translate(255.5,0)" style="opacity: 1;"><line y2="2" x2="0"></line><text dy=".71em" y="5" x="0" style="text-anchor: middle;">Lodgepole Pine</text></g><g class="tick" transform="translate(385.5,0)" style="opacity: 1;"><line y2="2" x2="0"></line><text dy=".71em" y="5" x="0" style="text-anchor: middle;">Ponderosa Pine</text></g><g class="tick" transform="translate(515.5,0)" style="opacity: 1;"><line y2="2" x2="0"></line><text dy=".71em" y="5" x="0" style="text-anchor: middle;">Cottonwood/Willow</text></g><g class="tick" transform="translate(645.5,0)" style="opacity: 1;"><line y2="2" x2="0"></line><text dy=".71em" y="5" x="0" style="text-anchor: middle;">Aspen</text></g><g class="tick" transform="translate(775.5,0)" style="opacity: 1;"><line y2="2" x2="0"></line><text dy=".71em" y="5" x="0" style="text-anchor: middle;">Douglas-fir</text></g><g class="tick" transform="translate(905.5,0)" style="opacity: 1;"><line y2="2" x2="0"></line><text dy=".71em" y="5" x="0" style="text-anchor: middle;">Krummholz</text></g><path class="domain" d="M50,2V0H980V2"></path></g><g class="y axis" transform="translate(50,0)"><g class="tick" transform="translate(0,380)" style="opacity: 1;"><line x2="-2" y2="0"></line><text dy=".32em" x="-5" y="0" style="text-anchor: end;">0</text></g><g class="tick" transform="translate(0,343.23583386715865)" style="opacity: 1;"><line x2="-2" y2="0"></line><text dy=".32em" x="-5" y="0" style="text-anchor: end;">10</text></g><g class="tick" transform="translate(0,306.4716677343173)" style="opacity: 1;"><line x2="-2" y2="0"></line><text dy=".32em" x="-5" y="0" style="text-anchor: end;">20</text></g><g class="tick" transform="translate(0,269.70750160147605)" style="opacity: 1;"><line x2="-2" y2="0"></line><text dy=".32em" x="-5" y="0" style="text-anchor: end;">30</text></g><g class="tick" transform="translate(0,232.94333546863473)" style="opacity: 1;"><line x2="-2" y2="0"></line><text dy=".32em" x="-5" y="0" style="text-anchor: end;">40</text></g><g class="tick" transform="translate(0,196.1791693357934)" style="opacity: 1;"><line x2="-2" y2="0"></line><text dy=".32em" x="-5" y="0" style="text-anchor: end;">50</text></g><g class="tick" transform="translate(0,159.41500320295208)" style="opacity: 1;"><line x2="-2" y2="0"></line><text dy=".32em" x="-5" y="0" style="text-anchor: end;">60</text></g><g class="tick" transform="translate(0,122.65083707011077)" style="opacity: 1;"><line x2="-2" y2="0"></line><text dy=".32em" x="-5" y="0" style="text-anchor: end;">70</text></g><g class="tick" transform="translate(0,85.88667093726949)" style="opacity: 1;"><line x2="-2" y2="0"></line><text dy=".32em" x="-5" y="0" style="text-anchor: end;">80</text></g><g class="tick" transform="translate(0,49.12250480442816)" style="opacity: 1;"><line x2="-2" y2="0"></line><text dy=".32em" x="-5" y="0" style="text-anchor: end;">90</text></g><path class="domain" d="M-2,20H0V380H-2"></path></g><text class="y label" text-anchor="end" y="6" dy=".75em" transform="rotate(-90)">Predicted Probability (%)</text><rect x="67" y="378.18100889093387" width="117" height="1.8189911090661326" fill="darkgreen"></rect><rect x="197" y="374.26369471255964" width="117" height="5.736305287440359" fill="darkgreen"></rect><rect x="327" y="379.9818545381618" width="117" height="0.01814546183817356" fill="darkgreen"></rect><rect x="457" y="379.99293814264234" width="117" height="0.007061857357655299" fill="darkgreen"></rect><rect x="587" y="20" width="117" height="360" fill="#006400"></rect><rect x="717" y="379.951608045415" width="117" height="0.0483919545849858" fill="darkgreen"></rect><rect x="847" y="379.9872343418741" width="117" height="0.012765658125886148" fill="darkgreen"></rect></svg><div id="tooltip" class="hidden" style="left: 587px; top: 210px;"><img src="./Predicting Forest Cover Type_files/aspen.jpg" id="pic" style="width:12em;"></div>
+  
+  <p class="space">Predicted Cover Type:<span id="result_call">Aspen</span></p>
+<!--  <div class="wrapper">-->
+<div class="tiptext">Text
+<div class="description"> Here is the big fat description box</div>
+</div>
+
+  <div class="flex-container">
+  <div>
+    <h2>Elevation: <span id="Elevation">2771</span></h2>
+    <div id="elevation_slider" class="d3-slider d3-slider-horizontal"><a class="d3-slider-handle" href="#" id="handle-one" style="left: 63.55%;"></a><svg class="d3-slider-axis d3-slider-axis-bottom" width="583" height="50" style="margin-left: -50px;"></svg></div>
+  </div>
+  <div>
+    <h2>Aspect: <span id="Aspect">51</span></h2>
+    <div id="aspect_slider" class="d3-slider d3-slider-horizontal"><a class="d3-slider-handle" href="#" id="handle-one" style="left: 14.17%;"></a><svg class="d3-slider-axis d3-slider-axis-bottom" width="583" height="50" style="margin-left: -50px;"></svg></div>
+  </div>
+  <div>
+    <h2 class="feature">Slope: <span id="Slope">3</span></h2>
+    <div id="slope_slider" class="d3-slider d3-slider-horizontal"><a class="d3-slider-handle" href="#" id="handle-one" style="left: 3.33%;"></a><svg class="d3-slider-axis d3-slider-axis-bottom" width="583" height="50" style="margin-left: -50px;"></svg></div>
+  </div>
+  <div>
+    <h2 class="feature">Horizontal Distance to Water: <span id="Horizontal_Distance_To_Hydrology">258</span></h2>
+    <div id="horizontal_water_slider" class="d3-slider d3-slider-horizontal"><a class="d3-slider-handle" href="#" id="handle-one" style="left: 17.2%;"></a><svg class="d3-slider-axis d3-slider-axis-bottom" width="583" height="50" style="margin-left: -50px;"></svg></div>
+</div>
+<div>
+    <h2 class="feature">Vertical Distance to Water: <span id="Vertical_Distance_To_Hydrology">0</span></h2>
+    <div id="vertical_water_slider" class="d3-slider d3-slider-horizontal"><a class="d3-slider-handle" href="#" id="handle-one" style="left: 0%;"></a><svg class="d3-slider-axis d3-slider-axis-bottom" width="583" height="50" style="margin-left: -50px;"></svg></div>
+</div>
+<div>
+    <h2 class="feature">Horizontal Distance To Roads: <span id="Horizontal_Distance_To_Roadways">510</span></h2>
+    <div id="roadway_slider" class="d3-slider d3-slider-horizontal"><a class="d3-slider-handle" href="#" id="handle-one" style="left: 7.31%;"></a><svg class="d3-slider-axis d3-slider-axis-bottom" width="583" height="50" style="margin-left: -50px;"></svg></div>
+  </div>
+  <div>
+    <h2 class="feature">Hillshade at 9am: <span id="Hillshade_9am">221</span></h2>
+    <div id="slider_9am" class="d3-slider d3-slider-horizontal"><a class="d3-slider-handle" href="#" id="handle-one" style="left: 86.67%;"></a><svg class="d3-slider-axis d3-slider-axis-bottom" width="583" height="50" style="margin-left: -50px;"></svg></div>
+    </div>
+    <div>
+    <h2 class="feature">Hillshade at noon: <span id="Hillshade_Noon">232</span></h2>
+    <div id="slider_noon" class="d3-slider d3-slider-horizontal"><a class="d3-slider-handle" href="#" id="handle-one" style="left: 90.98%;"></a><svg class="d3-slider-axis d3-slider-axis-bottom" width="583" height="50" style="margin-left: -50px;"></svg></div>
+</div>
+<div>
+    <h2 class="feature">Hillshade at 3pm: <span id="Hillshade_3pm">148</span></h2>
+    <div id="slider_3pm" class="d3-slider d3-slider-horizontal"><a class="d3-slider-handle" href="#" id="handle-one" style="left: 58.04%;"></a><svg class="d3-slider-axis d3-slider-axis-bottom" width="583" height="50" style="margin-left: -50px;"></svg></div>
+</div>
+<div>
+    <h2 class="feature">Horizontal Distance To Firepoint: <span id="Horizontal_Distance_To_Firepoints">6279</span></h2>
+    <div id="firepoint_slider" class="d3-slider d3-slider-horizontal"><a class="d3-slider-handle" href="#" id="handle-one" style="left: 89.7%;"></a><svg class="d3-slider-axis d3-slider-axis-bottom" width="583" height="50" style="margin-left: -50px;"></svg></div>
+</div>
+<div>
+    <h2 class="feature">Wilderness Area: <span id="Wilderness_Area">1</span></h2>
+    <div id="wilderness_silder" class="d3-slider d3-slider-horizontal"><a class="d3-slider-handle" href="#" id="handle-one" style="left: 0%;"></a><svg class="d3-slider-axis d3-slider-axis-bottom" width="583" height="50" style="margin-left: -50px;"></svg></div>
+</div>
+<div>
+    <h2 class="feature">Soil Type: <span id="Soil_Type">29</span></h2>
+    <div id="soil_slider" class="d3-slider d3-slider-horizontal"><a class="d3-slider-handle" href="#" id="handle-one" style="left: 71.79%;"></a><svg class="d3-slider-axis d3-slider-axis-bottom" width="583" height="50" style="margin-left: -50px;"></svg></div>
+</div>
+  </div>
+
+  <script src="./Predicting Forest Cover Type_files/jquery.min.js"></script>
+  <script src="./Predicting Forest Cover Type_files/d3.v3.min.js"></script>
+  <script src="./Predicting Forest Cover Type_files/d3.tip.v0.6.3.js"></script>
+  <script src="./Predicting Forest Cover Type_files/d3.slider.js"></script>
+
+  <script>
+
+      <!-- BAR CHART -->
+
+var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function(d) {
+    return "<strong>Type:</strong> <span style='color:red'>" + d.key + "</span>";
+  })
+
+function InitChart(barData) {
+d3.selectAll("svg > *").remove()
+var vis = d3.select('#barchart'),
+   WIDTH = 1000,
+   HEIGHT = 400,
+   MARGINS = {top: 20,right: 20,bottom: 20,left: 50},
+   xRange = d3.scale.ordinal().rangeRoundBands([MARGINS.left, WIDTH - MARGINS.right], 0.1).domain(barData.map(function (d) {return d.key;})),
+   yRange = d3.scale.linear().range([HEIGHT - MARGINS.top, MARGINS.bottom]).domain([0,d3.max(barData, function (d) {return d.prob;})]),
+
+  xAxis = d3.svg.axis()
+    .scale(xRange)
+    .tickSize(2)
+    .tickSubdivide(true),
+
+  yAxis = d3.svg.axis()
+    .scale(yRange)
+    .tickSize(2)
+    .orient("left")
+    .tickSubdivide(true);
+
+
+  vis.append('svg:g')
+      .attr('class', 'x axis')
+      .attr('transform', 'translate(0,' + (HEIGHT - MARGINS.bottom) + ')')
+      .call(xAxis);
+
+  vis.append('svg:g')
+      .attr('class', 'y axis')
+      .attr('transform', 'translate(' + (MARGINS.left) + ',0)')
+      .call(yAxis);
+
+
+  vis.append("text")
+      .attr("class", "y label")
+      .attr("text-anchor", "end")
+      .attr("y", 6)
+      .attr("dy", ".75em")
+      .attr("transform", "rotate(-90)")
+      .text("Predicted Probability (%)");
+
+
+  vis.selectAll('rect')
+      .data(barData).enter()
+      .append('rect')
+      .attr('x', function (d) {return xRange(d.key);})
+      .attr('y', function (d) {return yRange(d.prob);})
+      .attr('width', xRange.rangeBand())
+      .attr('height', function (d) {return ((HEIGHT - MARGINS.bottom) - yRange(d.prob));})
+      .attr('fill', 'darkgreen')
+      .on("mouseover", function(d) {
+            d3.select(this)
+            .transition()
+            .duration(250)
+            .attr("fill", '#77adab');
+
+            //Get this bar's x/y values, then augment for the tooltip
+            var xPosition = parseFloat(d3.select(this).attr("x"));
+            var yPosition = parseFloat(d3.select(this).attr("y")) / 2 + HEIGHT / 2;
+
+            //Update the tooltip position and value
+            d3.select("#tooltip")
+            .style("left", xPosition + "px")
+            .style("top", yPosition + "px")
+            .select("#value")
+            .text(d.key);
+
+            d3.select("#pic")
+            .attr("src",d.image);
+
+            //Show the tooltip
+            d3.select("#tooltip").classed("hidden", false);
+            })
+      .on("mouseout", function() {
+            d3.select(this)
+            .transition()
+            .delay(100)
+            .duration(250)
+            .attr("fill", 'darkgreen')
+
+            //Hide the tooltip
+            d3.select("#tooltip").classed("hidden", true);
+
+            })
+
+
+}
+
+
+
+var cur_elevation = 2596;
+var cur_aspect = 51;
+var cur_slope = 3;
+var cur_hor_water = 258;
+var cur_ver_water = 0;
+var cur_hor_road = 512;
+var cur_hill_9am = 221;
+var cur_hill_noon = 232;
+var cur_hill_3pm = 148;
+var cur_hor_fire = 6279;
+var cur_wild_area = 1;
+var cur_soil_type = 29;
+var cover_types = ['Spruce/Fir', 'Lodgepole Pine', 'Ponderosa Pine', 'Cottonwood/Willow', 'Aspen', 'Douglas-fir', 'Krummholz'];
+/*
+var barData = [
+    {key: "Spruce/Fir", prob: 0.31132698449622104},
+    {key: "Lodgepole Pine", prob: 3.4820180537494907},
+    {key: "Ponderosa Pine", prob: 0.3558732596560769},
+    {key: "Cottonwood/Willow", prob: 0.3810041679467747},
+    {key: "Aspen", prob: 95.11872191286199},
+    {key: "Douglas-fir", prob: 0.2597109817338908},
+    {key: "Krummholz", prob: 0.09134463955557942}]
+*/
+document.getElementById("result_call").innerHTML = cover_types[4];
+
+<!-- FUNCTION TO GET CHANCE FROM YOUR PREDICTOR WITH AJAX AND CHANGE BAR HEIGHT -->
+function getAndDrawChance(Elevation, Aspect, Slope, Horizontal_Distance_To_Hydrology, Vertical_Distance_To_Hydrology, Horizontal_Distance_To_Roadways, Hillshade_9am, Hillshade_Noon, Hillshade_3pm, Horizontal_Distance_To_Firepoints, Wilderness_Area, Soil_Type){
+
+  $.ajax({
+    type: "POST",
+    contentType: "application/json; charset=utf-8",
+    url: "/result",
+    dataType: "json",
+    async: true,
+    data: "{\"example\": ["+Elevation+","+Aspect+","+Slope+","+Horizontal_Distance_To_Hydrology+","+Vertical_Distance_To_Hydrology+","+Horizontal_Distance_To_Roadways+","+Hillshade_9am+","+Hillshade_Noon+","+Hillshade_3pm+","+Horizontal_Distance_To_Firepoints+","+Wilderness_Area+","+Soil_Type+"]}",
+    success: function (data) {
+      var forest_type = data;
+      var val1 = (forest_type[cover_types[0]]);
+      var val2 = (forest_type[cover_types[1]]);
+      var val3 = (forest_type[cover_types[2]]);
+      var val4 = (forest_type[cover_types[3]]);
+      var val5 = (forest_type[cover_types[4]]);
+      var val6 = (forest_type[cover_types[5]]);
+      var val7 = (forest_type[cover_types[6]]);
+      /*console.log(forest_type['result']) useful for testing and seeing what data exists*/
+      if (forest_type['result']=='0'){forest_type=cover_types[0];}
+      else if (forest_type['result']=='1'){forest_type = cover_types[1];}
+      else if (forest_type['result']=='2'){forest_type = cover_types[2];}
+      else if (forest_type['result']=='3'){forest_type = cover_types[3];}
+      else if (forest_type['result']=='4'){forest_type = cover_types[4];}
+      else if(forest_type['result']=='5'){forest_type = cover_types[5];}
+      else{forest_type = cover_types[6];}
+      var barData = [
+        {key:cover_types[0], prob: val1, image:'/static/spruce.jpg'},
+        {key:cover_types[1], prob: val2, image:'/static/lodge.jpg'},
+        {key:cover_types[2], prob: val3, image:'/static/ponder.jpg'},
+        {key:cover_types[3], prob: val4, image:'/static/willow.jpg'},
+        {key:cover_types[4], prob: val5, image:'/static/aspen.jpg'},
+        {key:cover_types[5], prob: val6, image:'/static/doug.jpg'},
+        {key:cover_types[6], prob: val7, image:'/static/krum.jpeg'}
+      ];
+      /*console.log(barData);useful for testing and seeing what data exists*/
+      InitChart(barData);
+
+      d3.select("#result_call")
+              .text(forest_type);
+            },
+            error: function (result) {
+              console.log('i got here')
+            }
+    })}
+
+    $(".elevation_slider").mouseover(function() {
+        $(this).children(".description").show();
+    }).mouseout(function() {
+        $(this).children(".description").hide();
+    });
+
+
+  <!-- SLIDERS -->
+
+
+    d3.select('#elevation_slider')
+    .call(
+      d3.slider()
+      .value(cur_elevation)
+      .min(1500).max(3500).step(1)
+      .axis(true)
+      .on("slide", function(evt, value) {
+        d3.select('#Elevation').text(value);
+        cur_elevation = value;
+        getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
+      }));
+
+    d3.select('#aspect_slider')
+    .call(
+      d3.slider()
+      .value(cur_aspect)
+      .min(0).max(360).step(1)
+      .axis(true)
+      .on("slide", function(evt, value) {
+        d3.select('#Aspect').text(value);
+        cur_aspect = value;
+        getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
+    }));
+
+    d3.select('#slope_slider')
+    .call(
+      d3.slider()
+      .value(cur_slope)
+      .min(0).max(90).step(1)
+      .axis(true)
+      .on("slide", function(evt, value) {
+        d3.select('#Slope').text(value);
+        cur_slope = value;
+        getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
+    }));
+
+    d3.select('#horizontal_water_slider')
+    .call(
+      d3.slider()
+      .value(cur_hor_water)
+      .min(0).max(1500).step(1)
+      .axis(true)
+      .on("slide", function(evt, value) {
+        d3.select('#Horizontal_Distance_To_Hydrology').text(value);
+        cur_hor_water = value;
+        getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
+      }));
+
+    d3.select('#vertical_water_slider')
+     .call(
+       d3.slider()
+         .value(cur_ver_water)
+         .min(0).max(600).step(1)
+         .axis(true)
+         .on("slide", function(evt,value) {
+           d3.select('#Vertical_Distance_To_Hydrology').text(value);
+           cur_ver_water = value;
+           getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
+         }));
+
+    d3.select('#roadway_slider')
+    .call(
+      d3.slider()
+        .value(cur_hor_road)
+        .min(0)
+        .max(7000)
+        .step(1)
+        .axis(true)
+        .on("slide", function(evt,value) {
+          d3.select('#Horizontal_Distance_To_Roadways').text(value);
+          cur_hor_road = value;
+          getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
+        }));
+
+    d3.select('#slider_9am')
+     .call(
+       d3.slider()
+         .value(cur_hill_9am)
+         .min(0)
+         .max(255)
+         .step(1)
+         .axis(true)
+         .on("slide", function(evt,value) {
+           d3.select('#Hillshade_9am').text(value);
+           cur_hill_9am = value;
+           getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
+        }));
+
+    d3.select('#slider_noon')
+     .call(
+       d3.slider()
+         .value(cur_hill_noon)
+         .min(0)
+         .max(255)
+         .step(1)
+         .axis(true)
+         .on("slide", function(evt,value) {
+           d3.select('#Hillshade_Noon').text(value);
+           cur_hill_noon = value;
+           getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
+         }));
+
+      d3.select('#slider_3pm')
+      .call(
+        d3.slider()
+          .value(cur_hill_3pm)
+          .min(0)
+          .max(255)
+          .step(1)
+          .axis(true)
+          .on("slide", function(evt,value) {
+            d3.select('#Hillshade_3pm').text(value);
+            cur_hill_3pm = value;
+            getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
+          }));
+
+      d3.select('#firepoint_slider')
+       .call(
+         d3.slider()
+           .value(cur_hor_fire)
+           .min(0)
+           .max(7000)
+           .step(1)
+           .axis(true)
+           .on("slide", function(evt,value) {
+             d3.select('#Horizontal_Distance_To_Firepoints').text(value);
+             cur_hor_fire = value;
+             getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
+           }));
+
+      d3.select('#wilderness_silder')
+       .call(
+         d3.slider()
+           .value(cur_wild_area)
+           .min(1)
+           .max(4)
+           .step(1)
+           .axis(true)
+           .on("slide", function(evt,value) {
+             d3.select('#Wilderness_Area').text(value);
+             cur_wild_area = value;
+             getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
+           }));
+
+      d3.select('#soil_slider')
+       .call(
+        d3.slider()
+          .value(cur_soil_type)
+          .min(1)
+          .max(40)
+          .step(1)
+          .axis(true)
+          .on("slide", function(evt,value) {
+            d3.select('#Soil_Type').text(value);
+            cur_soil_type = value;
+            getAndDrawChance(cur_elevation,cur_aspect, cur_slope, cur_hor_water, cur_ver_water, cur_hor_road, cur_hill_9am, cur_hill_noon, cur_hill_3pm, cur_hor_fire, cur_wild_area, cur_soil_type)
+          }));
+  </script>
+
+
+
+</body></html>
